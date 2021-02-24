@@ -1,0 +1,53 @@
+options:
+    #Prefixes
+    error_prefix : &cERROR»
+    normal_prefix : &2ItemManager»
+
+    #Colours
+    error1 : &c
+    error2 : &6
+
+    normal1: &a
+    normal2: &2
+
+    #Borders
+    border1 : black glass pane named "&0"
+    border2 : gray glass pane named "&0"
+    border3 : light gray glass pane named "&0"
+    
+    #DO NOT CHANGE THIS IF YOU HAVE USED THE SKRIPT BEFORE
+    storage : ItemManager
+
+#Misc
+function itemmanager_sendmsg(msg: text):
+    replace "<e1>" in {_msg} with "{@error1}"
+    replace "<e2>" in {_msg} with "{@error2}"
+    replace "<n1>" in {_msg} with "{@normal1}"
+    replace "<n2>" in {_msg} with "{@normal2}"
+    replace "<ep>" in {_msg} with "{@error_prefix}"
+    replace "<np>" in {_msg} with "{@normal_prefix}"
+    loop all players:
+        if loop-player has permission "itemmanager.msg":
+            send formatted {_msg} to loop-player
+    send formatted {_msg} to the console
+    
+#Create/Delete
+function itemmanager_new(id: text, item: item):
+    if {{@storage}::Item::%{_id}%} is set:
+        itemmanager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>is already set!")
+    else:
+        set {{@storage}::Item::%{_id}%} to {_item}
+        itemmanager_sendmsg("<np> <n1>Item with ID <n2>%{_id}% <n1>has been created!")
+
+function itemmanager_delete(id: text):
+    if {{@storage}::Item::%{_id}%} isn't set:
+        itemmanager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
+    else:
+        delete {{@storage}::Item::%{_id}%}
+        itemmanager_sendmsg("<np> <n1>Item with ID <n2>%{_id}% <n1>has been deleted!")
+
+#Get item
+function itemmanager_getItem(id: text) :: item:
+    if {{@storage}::Item::%{_id}%} isn't set:
+        itemmanager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
+    return {{@storage}::Item::%{_id}%}
