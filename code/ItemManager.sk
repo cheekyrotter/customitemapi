@@ -1,6 +1,6 @@
 options:
     #Prefixes
-    error_prefix : &cERROR»
+    error_prefix : &cITEMMANAGER_ERROR»
     normal_prefix : &2ItemManager»
 
     #Colours
@@ -10,16 +10,47 @@ options:
     normal1: &a
     normal2: &2
 
+    #Max Lengths
+    max_name: 50
+    max_lore: 100
+
     #Borders
-    border1 : black glass pane named "&0"
-    border2 : gray glass pane named "&0"
-    border3 : light gray glass pane named "&0"
+    border1 : black glass pane
+    border2 : gray glass pane
+    border3 : light gray glass pane
     
-    #DO NOT CHANGE THIS IF YOU HAVE USED THE SKRIPT BEFORE
+    #DO NOT CHANGE THIS IF YOU HAVE USED THIS SKRIPT BEFORE
     storage : ItemManager
 
+#On load
+on load:
+    wait 1 tick
+    set {_start} to now
+    itemManager_sendmsg("<np> <n1>Checking the config of ItemManager...")
+    set {_mn} to ("{@max_name}" parsed as an integer)
+    if {_mn} is not an integer:
+        itemManager_sendmsg("<ep> <e1>Option <e2>max_name <e1>must be an integer! (Currently set to <e2>{@max_name}<e1>)")
+    else if {_mn} <= 0:
+        itemManager_sendmsg("<ep> <e1>Option <e2>max_name <e1>must be more than 0! (Currently set to <e2>{@max_name}<e1>)")
+    else if {_mn} >= 255:
+        itemManager_sendmsg("<ep> <e1>Option <e2>max_name <e1>must be less than 255! (Currently set to <e2>{@max_name}<e1>)")
+    set {_ml} to ("{@max_lore}" parsed as an integer)
+    if {_ml} is not an integer:
+        itemManager_sendmsg("<ep> <e1>Option <e2>max_lore <e1>must be an integer! (Currently set to <e2>{@max_lore}<e1>)")
+    else if {_ml} <= 0:
+        itemManager_sendmsg("<ep> <e1>Option <e2>max_lore <e1>must be more than 0! (Currently set to <e2>{@max_lore}<e1>)")
+    else if {_ml} >= 255:
+        itemManager_sendmsg("<ep> <e1>Option <e2>max_lore <e1>must be less than 255! (Currently set to <e2>{@max_lore}<e1>)")
+    if ("{@border1}" parsed as an item) is not an item:
+        itemManager_sendmsg("<ep> <e1>Option <e2>border1 <e1>must be an item, without a name or lore! (Currently set to <e2>{@border1}<e1>)")
+    if ("{@border2}" parsed as an item) is not an item:
+        itemManager_sendmsg("<ep> <e1>Option <e2>border2 <e1>must be an item, without a name or lore! (Currently set to <e2>{@border2}<e1>)")
+    if ("{@border3}" parsed as an item) is not an item:
+        itemManager_sendmsg("<ep> <e1>Option <e2>border2 <e1>must be an item, without a name or lore! (Currently set to <e2>{@border3}<e1>)")
+    itemManager_sendmsg("<np> <n1>Loaded ItemManager in approximately <n2>%time since {_start}%<n1>! If there were any errors, please resolve them, otherwise the script maybe not function as intended.")
+
 #Misc
-function itemmanager_sendmsg(msg: text):
+function itemManager_sendmsg(msg: text):
     replace "<e1>" in {_msg} with "{@error1}"
     replace "<e2>" in {_msg} with "{@error2}"
     replace "<n1>" in {_msg} with "{@normal1}"
@@ -32,22 +63,55 @@ function itemmanager_sendmsg(msg: text):
     send formatted {_msg} to the console
     
 #Create/Delete
-function itemmanager_new(id: text, item: item):
+function itemManager_new(id: text, item: item):
     if {{@storage}::Item::%{_id}%} is set:
-        itemmanager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>is already set!")
+        itemManager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>is already set!")
     else:
         set {{@storage}::Item::%{_id}%} to {_item}
-        itemmanager_sendmsg("<np> <n1>Item with ID <n2>%{_id}% <n1>has been created!")
+        itemManager_sendmsg("<np> <n1>Item with ID <n2>%{_id}% <n1>has been created!")
 
-function itemmanager_delete(id: text):
+function itemManager_delete(id: text):
     if {{@storage}::Item::%{_id}%} isn't set:
-        itemmanager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
+        itemManager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
     else:
         delete {{@storage}::Item::%{_id}%}
-        itemmanager_sendmsg("<np> <n1>Item with ID <n2>%{_id}% <n1>has been deleted!")
+        itemManager_sendmsg("<np> <n1>Item with ID <n2>%{_id}% <n1>has been deleted!")
 
-#Get item
-function itemmanager_getItem(id: text) :: item:
+#Editing
+function itemManager_setName(id: text, name: text):
     if {{@storage}::Item::%{_id}%} isn't set:
-        itemmanager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
+        itemManager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
+        stop
+    else:
+        set {_l} to length of {_name}
+        if {_l} <= {@max_name}:
+            itemManager_sendmsg("<np> <n1>Name of item with ID <n2>%{_id}% <n1>has been set to <n2>%{_name}%<n1>!")
+            set the display name of {{@storage}::Item::%{_id}%} to {_name}
+            stop
+        else:
+            itemManager_sendmsg("<ep> <e1>Must be less than <e2>{@max_name} <e1>characters! (You used <e2>%{_l}%<e1>)")
+            stop
+            
+function itemManager_setLore(id: text, line: integer, lore: text):
+    if {{@storage}::Item::%{_id}%} isn't set:
+        itemManager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
+        stop
+    else:
+        set {_l} to length of {_lore}
+        if {_l} <= {@max_lore}:
+            itemManager_sendmsg("<np> <n1>Lore line <n2>%{_line}% <n1>of item with ID <n2>%{_id}% <n1>has been set to <n2>%{_lore}%<n1>!")
+            set line {_line} of {{@storage}::Item::%{_id}%}'s lore to {_lore}
+            stop
+        else:
+            itemManager_sendmsg("<ep> <e1>Must be less than <e2>{@max_lore} <e1>characters! (You used <e2>%{_l}%<e1>)")
+            stop
+
+#Return values
+function itemManager_getItem(id: text) :: item:
+    if {{@storage}::Item::%{_id}%} isn't set:
+        itemManager_sendmsg("<ep> <e1>Item with ID <e2>%{_id}% <e1>doesn't exist!")
     return {{@storage}::Item::%{_id}%}
+
+command itemtest <text>:
+    trigger:
+        give itemManager_getItem(arg-1) to the player
