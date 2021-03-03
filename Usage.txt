@@ -11,6 +11,10 @@
   normal1: #Main colour for normal messages
   normal2: #Secondary colour for normal messages
 
+  #Max Lengths
+  max_name: #Character limit for the name (semi-functional)
+  max_lore: #Character limit for a single line of lore (semi-functional)
+
   #Borders
   border1 : #Outer menu border
   border2 : #Inner menu border
@@ -21,7 +25,7 @@
 
 #Functions
 
-itemmanager_sendmsg(msg) #Sends the msg to all players with permission "itemmanager.msg" as well as the console, replacing the following below:
+itemManager_sendmsg(msg) #Sends the msg to all players with permission "itemmanager.msg" as well as the console, replacing the following below:
 
   <e1> -> {@error1}
   <e2> -> {@error2}
@@ -30,8 +34,12 @@ itemmanager_sendmsg(msg) #Sends the msg to all players with permission "itemmana
   <ep> -> {@error_prefix}
   <np> -> {@normal_prefix}
 
-itemmanager_new(id, item) #Creates a new item, if the ID isn't already used. Can include other data like lore or name
+itemManager_new(id, item) #Creates a new item, if the ID isn't already used. Can include other data like lore or name
 
-itemmanager_delete(id) #Delete the item with the ID, and removes the variable
+itemManager_delete(id) #Delete the item with the ID, and removes the variable
 
-itemmanager_getItem(id) :: item #Can be used as an expression, returning the item with that ID. Cannot be used on its own!
+itemManager_setName(id, name) #Set the name for an item, including colour codes
+
+itemManager_setLore(id, line [integer], lore) #Set the lore for any line of an item, also including colour codes
+
+itemManager_getItem(id) :: item #Can be used as an expression, returning the item with that ID. Cannot be used on its own!
