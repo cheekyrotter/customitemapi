@@ -17,3 +17,7 @@ command /newitem <text> <item>:
 ```
     
 See Usage.txt for a list of the functions, and how to use them (Gitbook coming soon!)
+
+# Installation
+Download and install Skript
+Put ItemManager.sk in Plugins/Skript/scripts/ in your server
