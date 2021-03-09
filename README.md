@@ -3,7 +3,9 @@ A developer API for Skript, allowing you to store, edit and retrieve complex ite
 
 # Dependencies
 -Skript (latest version is recommended)
+
 -SkBee (future update)
+
 -skript-gui (future update)
 
 # Example
