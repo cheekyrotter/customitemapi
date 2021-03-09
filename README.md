@@ -13,7 +13,7 @@ A developer API for Skript, allowing you to store, edit and retrieve complex ite
 command /newitem <text> <item>:
   permission: item.create
   trigger:
-    itemManager_new(arg-1, arg-2)
+    itemManager_new(arg-1, arg-2) #Creates a new item with the id "arg-1", and arg-2 as the item
 ```
     
 See Usage.txt for a list of the functions, and how to use them (Gitbook coming soon!)
